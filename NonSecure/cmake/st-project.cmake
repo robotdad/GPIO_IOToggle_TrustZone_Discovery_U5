@@ -72,8 +72,8 @@ target_link_options(
     -T
     "$<$<CONFIG:Debug>:${PROJECT_SOURCE_DIR}/STM32U585AIIXQ_FLASH.ld>"
     "$<$<NOT:$<CONFIG:Debug>>:${PROJECT_SOURCE_DIR}/STM32U585AIIXQ_FLASH.ld>"
-    "$<$<CONFIG:Debug>:${PROJECT_SOURCE_DIR}/..\\Secure\\build\\debug\\build\\secure_nsclib.o>"
-    "$<$<NOT:$<CONFIG:Debug>>:${PROJECT_SOURCE_DIR}/..\\Secure\\build\\release\\build\\secure_nsclib.o>"
+    "$<$<CONFIG:Debug>:${PROJECT_SOURCE_DIR}/..\\build\\debug\\build\\secure_nsclib.o>"
+    "$<$<NOT:$<CONFIG:Debug>>:${PROJECT_SOURCE_DIR}/..\\build\\release\\build\\secure_nsclib.o>"
 )
 
 target_sources(
