@@ -3,7 +3,7 @@
   "configurations": [
     {
       "project": "CMakeLists.txt",
-      "projectTarget": "GPIO_IOToggle_TrustZone_NonSecure.elf",
+      "projectTarget": "GPIO_IOToggle_TrustZone_Secure",
       "name": "Launch",
       "type": "cppdbg",
       "request": "launch",
@@ -18,7 +18,13 @@
       "stopAtConnect": true,
       "postRemoteConnectCommands": [
         {
-          "text": "load build/debug/build/GPIO_IOToggle_TrustZone_NonSecure.elf"
+          "text": "load build/debug/build/NonSecure/GPIO_IOToggle_TrustZone_NonSecure.elf"
+        },
+        {
+          "text": "load build/debug/build/Secure/GPIO_IOToggle_TrustZone_Secure.elf"
+        },
+        {
+          "text": "add-symbol-file build/debug/build/NonSecure/GPIO_IOToggle_TrustZone_NonSecure.elf"
         }
       ],
       "svdPath": "${st.svd}/STM32U5xx.svd"    }
