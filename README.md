@@ -1,5 +1,6 @@
-# TrustZone for the Nucleo-L552ZE-Q in VS Code
-This is a demonstration of starting the GTZC_TZSC_MPCBB_TrustZone example for the Nucleo-L552ZE-Q and importing it into VS Code. I'm going to show two ways to do this, an Easy Way and a Complete way. This repo contains the files for the Complete way.
+# TrustZone for the Discovery-B-U585I-IoT2A in VS Code
+
+This is a demonstration of starting the GPIO_IOToggle_TrustZone example for the Discovery-B-U585I-IoT2A and importing it into VS Code. I'm going to show two ways to do this, an Easy Way and a Complete way. This repo contains the files for the Complete way.
 
 While this is for a specific STM32 Sample, you can view this as two ways to approach getting a multiproject STM32 sample into VS Code. The Easy Way just imports the individual projects, then with minor modifications sets them up for build and debug. The Complete way creates a new CMake project for both of the STM32 projects converted for VS Code.
 
@@ -14,7 +15,7 @@ This project is about how to get this example into VS Code, it doesn't cover muc
 To use this just clone this repo and you can open in VS Code. Make sure you have completed the setup steps, then you can jump ahead to building the firmware.
 
 ```
-git clone https://github.com/robotdad/GTZC_TZSC_MPCBB_TrustZone-Nucleo-L55.git
+git clone https://github.com/robotdad/GPIO_IOToggle_TrustZone_Discovery_U5.git
 cd 
 code .
 ```
@@ -25,9 +26,9 @@ Make sure you have updated your STLink firmware on your board.
 
 I have included the steps for creating git repos and connecting them to GitHub below. If you are following along with those steps as well you need git and the GitHub cli installed.
 
-# GTZC_TZSC_MPCBB_TrustZone example from CubeMX
+# GPIO_IOToggle_TrustZone example from CubeMX
 
-In CubeMX go to example selector, search for the Nucleo-L552ZE-Q in the board name, find the GTZC_TZSC_MPCBB_TrustZone example, select it, and start project. This will prompt you for a location for the project, pick a location and open with CubeMX.
+In CubeMX go to example selector, search for the Discovery-B-U585I-IoT2A in the board name, find the GPIO_IOToggle_TrustZone example, select it, and start project. This will prompt you for a location for the project, pick a location and open with CubeMX.
 
 Go to the Project Manager tab, select STM32CubeIDE as the toolchain with Generate Under Root selected, now generate the code. Ignore the warnings that pop up.
 
@@ -45,7 +46,7 @@ gh repo create
 Follow the prompts for creating the repo on GitHub. You will want to add a remote, defaults are fine.
 
 ## Configuring the board
-There is a [readme.txt](readme.txt) in the root project folder that describes how to configure the board. You will need to have the STM32CubeProgrammer installed to configure the option bytes to enable TrustZone. Note that some of the option bytes are not visible until TrustZone is enabled. So start by launching STM32CubeProgrammer and connecting your board. You will find this by selecting OB in the menu for Option Bytes. TZEN is under the User Configuration section. Set TZEN=1 by selecting the checkbox. Make sure DBANK=1 with that checkbox selected as well. Now press Apply. After the option bytes are set you will see some new categories.
+There is a [readme-st.md](readme-st.md) in the root project folder that describes how to configure the board. You will need to have the STM32CubeProgrammer installed to configure the option bytes to enable TrustZone. Note that some of the option bytes are not visible until TrustZone is enabled. So start by launching STM32CubeProgrammer and connecting your board. You will find this by selecting OB in the menu for Option Bytes. TZEN is under the User Configuration section. Set TZEN=1 by selecting the checkbox. Make sure DBANK=1 with that checkbox selected as well. Now press Apply. After the option bytes are set you will see some new categories.
 
 Under Secure Area 1, set SECWM1_PSTRT value = 0x0  and SECWM1_PEND value = 0x7F meaning all 128 pages of Bank1 set as secure.
 
@@ -77,7 +78,7 @@ However, the .cproject for the NonSecure project also refers to the Secure proje
 ## Open the root project folder
 Close the NonSecure folder in VS Code, then open the parent folder where the example was generated. You may get some prompts to select CMake files from subfolders, disregard that for now while we set things up.
 
-You should now create a .gitignore file. Minimally make sure to exclude the build folder by adding the line "build/" to the file. You can also copy a [complete .gitignore from here](https://raw.githubusercontent.com/robotdad/GTZC_TZSC_MPCBB_TrustZone-Nucleo-L55/main/.gitignore). When done commit the file. 
+You should now create a .gitignore file. Minimally make sure to exclude the build folder by adding the line "build/" to the file. You can also copy a [complete .gitignore from here](https://raw.githubusercontent.com/robotdad/GPIO_IOToggle_TrustZone_Discovery_U5/main/.gitignore). When done commit the file. 
 
 Now the only changes listed in the git sidebar should be the generated artifacts from the import and the workspace file you created. 
 
@@ -101,7 +102,7 @@ Now create a CMakeLists.txt in the root with the following content.
 ```
 cmake_minimum_required(VERSION 3.20)
 
-project("GTZC_TZSC_MPCBB_TrustZone-Nucleo-L55" C CXX ASM)
+project("GPIO_IOToggle_TrustZone_Discovery_U5" C CXX ASM)
 
 add_subdirectory(Secure)
 add_subdirectory(NonSecure)
@@ -124,30 +125,30 @@ Note that the miDebuggerPath and debugServerPath are configured using environmen
 As this example has two pieces of firmware, one running in secure and one running non-secure, we need to load both onto the device. If you look at the postRemoteCommands section that is where the gdb commands are specified for loading the firmware. Modify this section as follows:
 ```
         {
-          "text": "load build/debug/build/NonSecure/GTZC_TZSC_MPCBB_TrustZone_NonSecure.elf"
+          "text": "load build/debug/build/NonSecure/GPIO_IOToggle_TrustZone_NonSecure.elf"
         },
         {
-          "text": "load build/debug/build/Secure/GTZC_TZSC_MPCBB_TrustZone_Secure.elf"
+          "text": "load build/debug/build/Secure/GPIO_IOToggle_TrustZone_Secure.elf"
         },
         {
-          "text": "add-symbol-file build/debug/build/NonSecure/GTZC_TZSC_MPCBB_TrustZone_NonSecure.elf"
+          "text": "add-symbol-file build/debug/build/NonSecure/GPIO_IOToggle_TrustZone_NonSecure.elf"
         }
 ```
 What this is doing is telling the debugger to load the secure and nonsecure firmware to the device. We also need to load the symbols for the NonSecure project explicitly as we need to set the launch target to be the Secure project. You can specify that with the program option explicitly, or at launch select the Secure target. I've chosen to explicitly reference it as it is the only selection that makes sense for this project.
 
 ### Set breakpoints and launch
-In the NonSecure project open Src/main.c. Set a breakpoint on the first HAL_GPIO_TogglePin in the main function. In the Secure project open Src/main.c and set a breakpoint on Hal_Init in the main function.
+In the NonSecure project open Src/main.c. Set a breakpoint on the first HAL_GPIO_TogglePin in the HAL_SYSTICK_Callback function. In the Secure project open Src/main.c and set a breakpoint on HAL_GPIO_TogglePin in the HAL_SYSTICK_Callback function.
 
 Now go back to the debug pane and select to run the Launch (NonSecure) option.
 
 One initial launch you should see a break in the Reset_Handler of the secure firmware as we have stopAtConnect set to True. You can set that to false to not break there. 
 
-Select continue in the debug toolbar. We'll now hit the breakpoint in the secure main on the Hal_Init. There isn't much to look at here, it basically initializes the board then starts the nonsecure firmware. Press continue to get to the next breakpoint.
+Select continue in the debug toolbar. We'll now hit the breakpoint in the secure main on the HAL_GPIO_TogglePin. Press continue to get to the next breakpoint. You will notice that you are hitting breakpoints across the secure and nonsecure code.
 
 ### Examine peripheral registers
-When you hit a break point at HAL_GPIO_TogglePin open the peripheral view from the command palette, select Focus on peripheral view. Expand the view that opens in the debug pane. Now, to understand what is being used on the hardware right select LED1_GPIO_Port and select Peek, Peek Definition. You will see this is GPIOC.  Do the same thing for LED1_Pin, or select Alt F12, and notice it is GPIO Pin 7.
+When you hit a break point at HAL_GPIO_TogglePin open the peripheral view from the command palette, select Focus on peripheral view. Expand the view that opens in the debug pane. The GPIO port and pin naming is clear in these variable names, we're using GPIOH and pins 6 and 7. Find the GPIOH section in the peripheral view. The pins are under the ODR section. You can step over the HAL_GPIO_TogglePin call and either watch the value for ODR change, or expand it to see the specific pin value update.
 
-Find the GPIOC section in the peripheral view. The pins are under the ODR section. You can step over the HAL_GPIO_TogglePin call and either watch the value for ODR change, or expand it to see the specific pin value update.
+If the variable names were not clear, you could highlight them and select Peek, Peek Definition which would show you the underlying values.
 
 ### Seeing the TrustZone fault
 This sample is designed to fault. Basically the firmware on the nonsecure side blinks LED1 three times then accesses secure memory. This is an access violation so it triggers a fault.
@@ -196,19 +197,19 @@ Note that the miDebuggerPath and debugServerPath are configured using environmen
 
 Change the program paramater to point to the firmware from the Secure project as that is the entry point and is responsible for loading the NonSecure project.
 ```
-"program": "../Secure/build/debug/build/GTZC_TZSC_MPCBB_TrustZone_Secure.elf",
+"program": "../Secure/build/debug/build/GPIO_IOToggle_TrustZone_Secure.elf",
 ```
 
 As this example has two pieces of firmware, one running in secure and one running non-secure, we need to load both onto the device. If you look at the postRemoteCommands section that is where the gdb commands are specified for loading the firmware. We also need to add symbols explicitly for the firmware that is not loaded with the program argument. Modify this section as follows:
 ```
         {
-          "text": "load build/debug/build/GTZC_TZSC_MPCBB_TrustZone_NonSecure.elf"
+          "text": "load build/debug/build/GPIO_IOToggle_TrustZone_NonSecure.elf"
         },
         {
-          "text": "load ../Secure/build/debug/build/GTZC_TZSC_MPCBB_TrustZone_Secure.elf"
+          "text": "load ../Secure/build/debug/build/GPIO_IOToggle_TrustZone_Secure.elf"
         },
         {
-          "text": "add-symbol-file build/debug/build/GTZC_TZSC_MPCBB_TrustZone_NonSecure.elf"
+          "text": "add-symbol-file build/debug/build/GPIO_IOToggle_TrustZone_NonSecure.elf"
         }
 ```
 What this is doing is telling the debugger to load the secure and nonsecure firmware to the device. We also need to load the symbols for the NonSecure project explicitly as we need to set the launch target to be the Secure project. You can specify that with the program option explicitly, or at launch select the Secure target. I've chosen to explicitly reference it as it is the only selection that makes sense for this project.
